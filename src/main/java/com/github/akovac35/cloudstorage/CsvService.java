@@ -10,8 +10,8 @@ import com.google.cloud.storage.StorageOptions;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +27,7 @@ References:
 public class CsvService {
 
     private static Storage storage = StorageOptions.getDefaultInstance().getService();
-    private final Logger logger = LogManager.getLogger(CsvService.class);
+    private static final Logger logger = LoggerFactory.getLogger(CsvService.class);
 
     @Value("${google.storage.bucket}")
     private String bucketName;
@@ -35,7 +35,7 @@ public class CsvService {
     public String getFileContents(String fileName)
     {
         if(logger.isTraceEnabled())
-            logger.trace(new Object[] {fileName});
+            logger.trace("{}", fileName);
 
         Blob blob = storage.get(bucketName, fileName);
 
@@ -45,7 +45,7 @@ public class CsvService {
     public List<String[]> getCsvContents(String fileName) throws IOException, CsvException
     {
         if(logger.isTraceEnabled())
-            logger.trace(new Object[] {fileName});
+            logger.trace("{}", fileName);
 
         String tmp = getFileContents(fileName);
 
