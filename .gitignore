@@ -5,7 +5,7 @@
 .settings
 .theia
 .vscode
-.target
+target
 
 # Compiled class file
 *.class
