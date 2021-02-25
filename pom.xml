@@ -43,6 +43,8 @@
         <google.spanner.version>0.24.0-beta</google.spanner.version>
         <google.cloudstorage.version>1.6.0</google.cloudstorage.version>
         <google-api-pubsub.version>v1-rev8-1.21.0</google-api-pubsub.version>
+
+         <com.opencsv.version>5.3</com.opencsv.version>
 	</properties>
 
 	<dependencies>
@@ -101,18 +103,16 @@
             <version>${google.spanner.version}</version>
         </dependency>
 
-
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-tcnative-boringssl-static</artifactId>
-      <version>2.0.3.Final</version>
-    </dependency>
-    <dependency>
-        <groupId>com.google.cloud</groupId>
-        <artifactId>google-cloud-core</artifactId>
-        <version>1.6.0</version>
-    </dependency>
-
+        <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-tcnative-boringssl-static</artifactId>
+        <version>2.0.3.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-core</artifactId>
+            <version>1.6.0</version>
+        </dependency>
 
     <dependency>
         <groupId>com.google.cloud</groupId>
@@ -146,6 +146,11 @@
         <version>1.6.1</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.opencsv</groupId>
+      <artifactId>opencsv</artifactId>
+      <version>${com.opencsv.version}</version>
+    </dependency>
 
     </dependencies>
 	<build>
@@ -166,7 +171,7 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
                 <executions>
-                    <execution>
+                    <!-- <execution>
                         <id>worker</id>
                         <goals>
                             <goal>java</goal>
@@ -192,7 +197,7 @@
                         <configuration>
                             <mainClass>com.google.training.appdev.setup.QuestionBuilder</mainClass>
                         </configuration>
-                    </execution>
+                    </execution> -->
                 </executions>
 			</plugin>
 		</plugins>

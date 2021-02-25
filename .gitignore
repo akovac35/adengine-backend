@@ -3,6 +3,8 @@
 .factorypath
 .project
 .settings
+.theia
+.vscode
 
 # Compiled class file
 *.class

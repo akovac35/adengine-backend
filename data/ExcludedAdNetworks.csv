@@ -1,0 +1,4 @@
+adname,countrycodeiso3,appname,platform,osversion,appversion,excludeifadnamepresent
+facebook,chn,*,*,*,*,*
+admob-optout,*,*,*,*,*,admob
+admob,*,*,android,9,*,*
