@@ -1,4 +1,4 @@
-package com.github.akovac35.cloudstorage;
+package com.github.akovac35.model;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.github.akovac35.AdEngineBackend;
 import com.github.akovac35.TestConfiguration;
+import com.github.akovac35.cloudstorage.CsvService;
 import com.opencsv.exceptions.CsvException;
 
 import org.junit.Test;
@@ -20,24 +21,23 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = AdEngineBackend.class)
-public class CsvServiceTest {
+public class AdNetworkScoreDtoTest
+{
     @Autowired
     private CsvService csvService;
 
     @Test
-    public void getFileContents_Works() throws IOException, CsvException
+    public void fromCsv_Works() throws IOException, CsvException
     {
-        String result = csvService.getFileContents(TestConfiguration.ExcludedAdNetworksFileName);
+        List<String[]> result = csvService.getCsvContents(TestConfiguration.AdNetworkScoreFileName);
+        List<AdNetworkScoreDto> scores = AdNetworkScoreDto.fromCsv(result);
         
-        assertNotNull(result);
-        assertTrue(result.length() > 0);
-    }
-
-    @Test
-    public void getCsvContents_Works() throws IOException, CsvException
-    {
-        List<String[]> result = csvService.getCsvContents(TestConfiguration.ExcludedAdNetworksFileName);
-        
-        assertTrue(result.size() != 0);
+        assertTrue(scores.size() != 0);
+        for (AdNetworkScoreDto adNetworkScoreDto : scores) {
+            assertNotNull(adNetworkScoreDto);
+            assertNotNull(adNetworkScoreDto.getAdName());
+            assertNotNull(adNetworkScoreDto.getAdType());
+            assertNotNull(adNetworkScoreDto.getCountryCodeIso2());
+        }
     }
 }

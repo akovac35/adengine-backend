@@ -17,12 +17,14 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 public class TestConfiguration {
     public static final String ExcludedAdNetworksFileName = "ExcludedAdNetworks.csv";
+    public static final String AdNetworkScoreFileName = "AdNetworkScore.csv";
 
     @Bean
     @Primary
     public CsvService csvService() throws IOException, CsvException {
         CsvService service = Mockito.mock(CsvService.class);
-        when(service.getFileContents(ExcludedAdNetworksFileName)).thenReturn("adname,countrycodeiso3,appname,platform,osversion,appversion,excludeifadnamepresent");
+        when(service.getFileContents(ExcludedAdNetworksFileName)).thenReturn(TestFileHelper.readFile(ExcludedAdNetworksFileName));
+        when(service.getFileContents(AdNetworkScoreFileName)).thenReturn(TestFileHelper.readFile(AdNetworkScoreFileName));
         when(service.getCsvContents(ExcludedAdNetworksFileName)).thenCallRealMethod();
         return service;
     }

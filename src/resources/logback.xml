@@ -21,11 +21,7 @@
         </encoder>
     </appender>
 
-    <logger name="io.grpc" level="INFO"/>
-    <logger name="io.netty" level="INFO"/>
-    <logger name="i.n.handler" level="INFO"/>
-
-    <root level="DEBUG">
+    <root level="ERROR">
         <appender-ref ref="STDOUT" />
     </root>
 
