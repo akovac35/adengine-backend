@@ -8,7 +8,7 @@ import java.util.List;
 
 import com.github.akovac35.AdEngineBackend;
 import com.github.akovac35.TestConfiguration;
-import com.github.akovac35.cloudstorage.CsvService;
+import com.github.akovac35.services.CsvService;
 import com.opencsv.exceptions.CsvException;
 
 import org.junit.Test;
@@ -31,7 +31,10 @@ public class AdNetworkScoreDtoTest
     @Test
     public void fromCsv_Works() throws IOException, CsvException
     {
-        List<String[]> result = csvService.getCsvContents(TestConfiguration.AdNetworkScoreFileName);
+        List<String[]> result = csvService.getCsvContents(TestConfiguration.AdNetworkScoresFileName);
+
+        assertTrue(result.size() != 0);
+
         List<AdNetworkScoreDto> scores = AdNetworkScoreDto.fromCsv(result);
         
         assertTrue(scores.size() != 0);

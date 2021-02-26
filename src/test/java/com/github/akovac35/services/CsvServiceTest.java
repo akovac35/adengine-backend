@@ -1,4 +1,4 @@
-package com.github.akovac35.cloudstorage;
+package com.github.akovac35.services;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;

@@ -1,4 +1,4 @@
-package com.github.akovac35.cloudstorage;
+package com.github.akovac35.services;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -14,8 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-
 
 /*
 References:
@@ -35,7 +33,9 @@ public class CsvService {
     public String getFileContents(String fileName)
     {
         if(logger.isTraceEnabled())
-            logger.trace("{}", fileName);
+                    logger.trace("getFileContents: {}", fileName);
+
+        if(fileName == null) throw new IllegalArgumentException("Argument is null: fileName");
 
         Blob blob = storage.get(bucketName, fileName);
 
@@ -45,9 +45,12 @@ public class CsvService {
     public List<String[]> getCsvContents(String fileName) throws IOException, CsvException
     {
         if(logger.isTraceEnabled())
-            logger.trace("{}", fileName);
+            logger.trace("getCsvContents: {}", fileName);
+
+        if(fileName == null) throw new IllegalArgumentException("Argument is null: fileName");
 
         String tmp = getFileContents(fileName);
+        if(tmp == null) throw new IllegalArgumentException("File is invalid: fileName");
 
         try (CSVReader reader = new CSVReader(new StringReader(tmp))) {
             List<String[]> r = reader.readAll();
