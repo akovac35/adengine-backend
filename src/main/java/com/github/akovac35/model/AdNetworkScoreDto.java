@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 public class AdNetworkScoreDto {
     private String adName;
-    private float adScore;
+    private double adScore;
     private String adType;
     private String countryCodeIso2;
 
@@ -17,11 +17,11 @@ public class AdNetworkScoreDto {
         this.adName = adName;
     }
 
-    public float getAdScore() {
+    public double getAdScore() {
         return adScore;
     }
 
-    public void setAdScore(float adScore) {
+    public void setAdScore(double adScore) {
         this.adScore = adScore;
     }
 
@@ -48,10 +48,10 @@ public class AdNetworkScoreDto {
         List<AdNetworkScoreDto> result = csv.stream().skip(1).map(item -> {
             AdNetworkScoreDto tmp = new AdNetworkScoreDto();
 
-            tmp.adName = item[0];
+            tmp.adName = item[0].toLowerCase();
             tmp.adScore = Float.parseFloat(item[1]);
-            tmp.adType = item[2];
-            tmp.countryCodeIso2 = item[3];
+            tmp.adType = item[2].toLowerCase();
+            tmp.countryCodeIso2 = item[3].toLowerCase();
 
             return tmp;
         }).collect(Collectors.toList());

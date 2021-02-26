@@ -94,9 +94,17 @@ public class CacheService
             if(logger.isTraceEnabled())
                 logger.trace("CacheServiceTimerTask.run");
             
+            // We are just updating the references, so no need for thread synchronization
             try {
-                // We are just updating the references, so no need for thread synchronization
-                scores = AdNetworkScoreDto.fromCsv(csvServiceInstance.getCsvContents(adNetworkScoresCsvFileName));
+                List<AdNetworkScoreDto> tmpScores = AdNetworkScoreDto.fromCsv(csvServiceInstance.getCsvContents(adNetworkScoresCsvFileName));
+                // Do not update the scores in case something is wrong with the score update pipeline
+                if(tmpScores.size() > 0) {
+                    scores = tmpScores;
+                }
+                else {
+                    logger.warn("CacheServiceTimerTask.run: {} file is invalid, cache was not updated", adNetworkScoresCsvFileName);
+                }
+                
                 excludedNetworks = ExcludedAdNetworkDto.fromCsv(csvServiceInstance.getCsvContents(excludedAdNetworksCsvFileName));
             } catch (Exception e) {
                 logger.error(e.getMessage());

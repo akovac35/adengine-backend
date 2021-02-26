@@ -1,4 +1,4 @@
-adname,countrycodeiso3,appname,platform,osversion,appversion,excludeifadnamepresent
-facebook,chn,*,*,*,*,*
+adName,countryCodeIso2,appName,platform,osVersion,appVersion,excludeIfThisAdNamePresent
+facebook ads,cn,*,*,*,*,-
 admob-optout,*,*,*,*,*,admob
-admob,*,*,android,9,*,*
+admob,*,*,android,9,*,-

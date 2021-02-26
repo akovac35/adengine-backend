@@ -13,7 +13,7 @@ public class AdNetworkContextDto
         return platform;
     }
 
-    public void setPlatform(String platform) {
+    public void setPlatform(final String platform) {
         this.platform = platform;
     }
 
@@ -21,7 +21,7 @@ public class AdNetworkContextDto
         return osVersion;
     }
 
-    public void setOsVersion(String osVersion) {
+    public void setOsVersion(final String osVersion) {
         this.osVersion = osVersion;
     }
 
@@ -29,7 +29,7 @@ public class AdNetworkContextDto
         return appName;
     }
 
-    public void setAppName(String appName) {
+    public void setAppName(final String appName) {
         this.appName = appName;
     }
 
@@ -37,7 +37,7 @@ public class AdNetworkContextDto
         return appVersion;
     }
 
-    public void setAppVersion(String appVersion) {
+    public void setAppVersion(final String appVersion) {
         this.appVersion = appVersion;
     }
 
@@ -45,7 +45,7 @@ public class AdNetworkContextDto
         return countryCodeIso2;
     }
 
-    public void setCountryCodeIso2(String countryCodeIso2) {
+    public void setCountryCodeIso2(final String countryCodeIso2) {
         this.countryCodeIso2 = countryCodeIso2;
     }
 
@@ -53,8 +53,19 @@ public class AdNetworkContextDto
         return adType;
     }
 
-    public void setAdType(String adType) {
+    public void setAdType(final String adType) {
         this.adType = adType;
     }
 
+    @Override
+    public String toString() {
+        return "AdNetworkContextDto [" + 
+        "platform=" + platform + 
+        ", osVersion=" + osVersion + 
+        ", appName=" + appName + 
+        ", appVersion=" + appVersion + 
+        ", countryCodeIso2=" + countryCodeIso2 + 
+        ", adType=" + adType + 
+        "]";
+    }
 }

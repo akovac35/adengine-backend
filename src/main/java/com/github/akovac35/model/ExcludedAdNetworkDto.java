@@ -11,6 +11,7 @@ public class ExcludedAdNetworkDto
 	private String appName;
 	private String appVersion;
     private String countryCodeIso2;
+    private String excludeIfThisAdNamePresent;
 
     public String getAdName() {
         return adName;
@@ -59,6 +60,14 @@ public class ExcludedAdNetworkDto
     public void setCountryCodeIso2(String countryCodeIso2) {
         this.countryCodeIso2 = countryCodeIso2;
     }
+    
+    public String getExcludeIfThisAdNamePresent() {
+        return excludeIfThisAdNamePresent;
+    }
+
+    public void setExcludeIfThisAdNamePresent(String excludeIfThisAdNamePresent) {
+        this.excludeIfThisAdNamePresent = excludeIfThisAdNamePresent;
+    }
 
     public static List<ExcludedAdNetworkDto> fromCsv(List<String[]> csv) {
         if(csv == null) throw new IllegalArgumentException("Argument is null: csv");
@@ -67,12 +76,13 @@ public class ExcludedAdNetworkDto
         List<ExcludedAdNetworkDto> result = csv.stream().skip(1).map(item -> {
             ExcludedAdNetworkDto tmp = new ExcludedAdNetworkDto();
 
-            tmp.adName = item[0];
-            tmp.platform = item[1];
-            tmp.osVersion = item[2];
-            tmp.appName = item[3];
-            tmp.appVersion = item[4];
-            tmp.countryCodeIso2 = item[5];
+            tmp.adName = item[0].toLowerCase();
+            tmp.countryCodeIso2 = item[1].toLowerCase();
+            tmp.appName = item[2].toLowerCase();
+            tmp.platform = item[3].toLowerCase();
+            tmp.osVersion = item[4].toLowerCase();
+            tmp.appVersion = item[5].toLowerCase();
+            tmp.excludeIfThisAdNamePresent = item[6].toLowerCase();
 
             return tmp;
         }).collect(Collectors.toList());

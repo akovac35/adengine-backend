@@ -24,7 +24,7 @@
 	<packaging>jar</packaging>
 
 	<name>adengine-backend</name>
-	<description>Scalable backend for an AD system. Returns top scored AD network.</description>
+	<description>Retrieves top scored ad networks for some context.</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -147,22 +147,22 @@
     </dependency>
 
     <dependency>
-      <groupId>com.opencsv</groupId>
-      <artifactId>opencsv</artifactId>
-      <version>${com.opencsv.version}</version>
+        <groupId>com.opencsv</groupId>
+        <artifactId>opencsv</artifactId>
+        <version>${com.opencsv.version}</version>
     </dependency>
     <dependency>
-    <groupId>commons-io</groupId>
-    <artifactId>commons-io</artifactId>
-    <version>2.6</version>
-</dependency>
-    <!-- <dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
-		</dependency> -->    
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.6</version>
+    </dependency>
 
+    
+      <!-- <dependency>
+        <groupId>org.scala-lang</groupId>
+        <artifactId>scala-library</artifactId>
+        <version>2.13.0</version>
+      </dependency> -->
     </dependencies>
 	<build>
 		<plugins>
