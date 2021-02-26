@@ -44,6 +44,7 @@ public class AdNetworkScoreDto {
     public static List<AdNetworkScoreDto> fromCsv(List<String[]> csv) {
         if(csv == null) throw new IllegalArgumentException("Argument is null: csv");
         
+        // Skip the header line
         List<AdNetworkScoreDto> result = csv.stream().skip(1).map(item -> {
             AdNetworkScoreDto tmp = new AdNetworkScoreDto();
 

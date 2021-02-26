@@ -18,6 +18,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.stream.Collectors;
+
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = AdEngineBackend.class)
@@ -39,5 +41,7 @@ public class AdNetworkScoreDtoTest
             assertNotNull(adNetworkScoreDto.getAdType());
             assertNotNull(adNetworkScoreDto.getCountryCodeIso2());
         }
+
+        assertTrue(scores.stream().filter(item -> item.getAdScore() > 0).collect(Collectors.toList()).size() > 0);
     }
 }
