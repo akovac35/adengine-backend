@@ -83,7 +83,7 @@ public class FilterService
             if(isPresent)
                 scores.removeIf(item -> item.getAdName().equals(toExcludeIfPresentItem.getAdName()));
         }
-        // Remove duplicates
+        // Remove duplicates, for example, context is set for any country
         scores = scores.stream()
             .filter(distinctByKey(item -> item.getAdName() + item.getAdType()))
             .collect(Collectors.toList());
@@ -91,7 +91,7 @@ public class FilterService
         if(logger.isTraceEnabled())
             logger.trace("getRelevantScores: scores.size={} after filtering by excluded", scores.size());
 
-        // Verify that we have minimum number of distinct items of each ad type, and append unfiltered if not
+        // Verify that we have a minimum number of distinct items of each ad type, and append unfiltered if not
         Map<String, Long> countByAdType = new HashMap<String, Long>();
         List<String> distinctAdTypes = immutableScores.stream()
             .filter(distinctByKey(item -> item.getAdType()))
