@@ -1,5 +1,6 @@
 package com.github.akovac35.services;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -55,13 +56,15 @@ public class FilterServiceTest {
         logger.info("getRelevantScores_Works_ForKnownCountry: number of results={}", result.size());
 
         assertNotNull(result);
-        assertTrue(result.size() == 26);
+        assertTrue(result.size() == 29);
         assertTrue(result.get(0).getAdScore() > result.get(result.size()-1).getAdScore());
     }
 
     @Test
     public void getRelevantScores_Adds_WhenTooFewAdNetworksPerType()
-    {        
+    {       
+        String adName = "aleksander";
+        
         AdNetworkContextDto context = new AdNetworkContextDto();
         context.setPlatform("platform");
         context.setOsVersion("osVersion");
@@ -73,12 +76,14 @@ public class FilterServiceTest {
         logger.info("getRelevantScores_Works_ForKnownCountry: number of results={}", result.size());
 
         assertNotNull(result);
-        assertTrue(result.size() == 15);
+        // Three ad network types ...
+        assertTrue(result.size() == 3 * filterServiceInstance.getFilterServiceMinAdNetworksPerAdType());
+        assertTrue(result.stream().anyMatch(item -> adName.equals(item.getAdName())));
         assertTrue(result.get(0).getAdScore() > result.get(result.size()-1).getAdScore());
     }
 
     @Test
-    public void getRelevantScores_ContextWithAnyCountry_DoesNotHaveDuplicates()
+    public void getRelevantScores_Works_ContextWithAnyCountry()
     {        
         AdNetworkContextDto context = new AdNetworkContextDto();
         context.setPlatform("platform");
@@ -91,7 +96,53 @@ public class FilterServiceTest {
         logger.info("getRelevantScores_Works_ForKnownCountry: number of results={}", result.size());
 
         assertNotNull(result);
-        assertTrue(result.size() == 231);
+        assertTrue(result.size() == 234);
+        assertTrue(result.get(0).getAdScore() > result.get(result.size()-1).getAdScore());
+    }
+
+    @Test
+    public void getRelevantScores_FacebookInChina_IsExcluded()
+    {        
+        String adName = "facebook ads";
+        String country = "cn";
+        assertTrue(cacheServiceInstance.getImmutableScores().stream().anyMatch(item -> country.equals(item.getCountryCodeIso2()) && adName.equals(item.getAdName())));
+        
+        AdNetworkContextDto context = new AdNetworkContextDto();
+        context.setPlatform("platform");
+        context.setOsVersion("osVersion");
+        context.setAppName("appName");
+        context.setAppVersion("appVersion");
+        context.setCountryCodeIso2(country);
+
+        List<AdNetworkScoreDto> result = filterServiceInstance.getRelevantScores(context, cacheServiceInstance.getImmutableScores(), cacheServiceInstance.getImmutableExcludedNetworks());
+        logger.info("getRelevantScores_Works_ForKnownCountry: number of results={}", result.size());
+
+        assertNotNull(result);
+        assertTrue(result.size() == 118);
+        assertFalse(result.stream().anyMatch(item -> adName.equals(item.getAdName())));
+        assertTrue(result.get(0).getAdScore() > result.get(result.size()-1).getAdScore());
+    }
+
+    @Test
+    public void getRelevantScores_AdMobAndroid9_IsExcluded()
+    {        
+        String adName = "admob";
+        String country = "*";
+        assertTrue(cacheServiceInstance.getImmutableScores().stream().anyMatch(item -> adName.equals(item.getAdName())));
+        
+        AdNetworkContextDto context = new AdNetworkContextDto();
+        context.setPlatform("android");
+        context.setOsVersion("9");
+        context.setAppName("appName");
+        context.setAppVersion("appVersion");
+        context.setCountryCodeIso2(country);
+
+        List<AdNetworkScoreDto> result = filterServiceInstance.getRelevantScores(context, cacheServiceInstance.getImmutableScores(), cacheServiceInstance.getImmutableExcludedNetworks());
+        logger.info("getRelevantScores_Works_ForKnownCountry: number of results={}", result.size());
+
+        assertNotNull(result);
+        assertTrue(result.size() == 234);
+        assertFalse(result.stream().anyMatch(item -> adName.equals(item.getAdName())));
         assertTrue(result.get(0).getAdScore() > result.get(result.size()-1).getAdScore());
     }
 }

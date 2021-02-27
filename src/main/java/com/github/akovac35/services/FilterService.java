@@ -69,7 +69,8 @@ public class FilterService
 
         List<AdNetworkScoreDto> scores = new ArrayList<AdNetworkScoreDto>(immutableScores);
         if(!ANY.equals(context.getCountryCodeIso2().toLowerCase()))
-            scores.removeIf(item -> !item.getCountryCodeIso2().equals(context.getCountryCodeIso2().toLowerCase()));
+            scores.removeIf(item -> !ANY.equals(item.getCountryCodeIso2()) &&
+            !item.getCountryCodeIso2().equals(context.getCountryCodeIso2().toLowerCase()));
 
         if(logger.isTraceEnabled())
             logger.trace("getRelevantScores: scores.size={} after filtering by country", scores.size());
@@ -82,7 +83,7 @@ public class FilterService
             if(isPresent)
                 scores.removeIf(item -> item.getAdName().equals(toExcludeIfPresentItem.getAdName()));
         }
-        // Remove duplicates which may occur if use context with any country
+        // Remove duplicates
         scores = scores.stream()
             .filter(distinctByKey(item -> item.getAdName() + item.getAdType()))
             .collect(Collectors.toList());
@@ -90,12 +91,13 @@ public class FilterService
         if(logger.isTraceEnabled())
             logger.trace("getRelevantScores: scores.size={} after filtering by excluded", scores.size());
 
-        // Verify that we have minimum number of items of each ad type, and append unfiltered if not
+        // Verify that we have minimum number of distinct items of each ad type, and append unfiltered if not
         Map<String, Long> countByAdType = new HashMap<String, Long>();
         List<String> distinctAdTypes = immutableScores.stream()
             .filter(distinctByKey(item -> item.getAdType()))
             .map(AdNetworkScoreDto::getAdType)
             .collect(Collectors.toList());
+        // We have already removed duplicates a few lines above
         for (String distinctAdTypesItem: distinctAdTypes) {
             Long count = scores.stream()
             .filter(item -> item.getAdType().equals(distinctAdTypesItem))
@@ -134,5 +136,9 @@ public class FilterService
         Function<? super T, ?> keyExtractor) {
         Map<Object, Boolean> seen = new ConcurrentHashMap<>(); 
         return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null; 
+    }
+
+    public int getFilterServiceMinAdNetworksPerAdType() {
+        return filterServiceMinAdNetworksPerAdType;
     }
 }
