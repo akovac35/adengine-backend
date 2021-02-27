@@ -2,8 +2,12 @@ package com.github.akovac35.services;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.github.akovac35.model.AdNetworkContextDto;
@@ -30,6 +34,9 @@ public class FilterService
         if(logger.isTraceEnabled())
             logger.trace("ctor: {}", minAdNetworksPerAdType);
         
+        if(minAdNetworksPerAdType < 1)
+            throw new IllegalArgumentException("Argument should be larger than 0: minAdNetworksPerAdType");
+
         filterServiceMinAdNetworksPerAdType = minAdNetworksPerAdType;
     }
 
@@ -45,36 +52,59 @@ public class FilterService
             logger.trace("getRelevantScores: {}, {}, {}", context, immutableScores.size(), immutableExcludedNetworks.size());
         
         List<ExcludedAdNetworkDto> toExclude = immutableExcludedNetworks.stream()
-            .filter(item -> item.getCountryCodeIso2() == ANY || item.getCountryCodeIso2() == context.getCountryCodeIso2().toLowerCase())
-            .filter(item -> item.getAppName() == ANY || item.getAppName() == context.getAppName().toLowerCase())
-            .filter(item -> item.getPlatform() == ANY || item.getPlatform() == context.getPlatform().toLowerCase())
-            .filter(item -> item.getOsVersion() == ANY || item.getOsVersion() == context.getOsVersion().toLowerCase())
-            .filter(item -> item.getAppVersion() == ANY || item.getAppVersion() == context.getAppVersion().toLowerCase())
+            .filter(item -> ANY.equals(item.getCountryCodeIso2()) || item.getCountryCodeIso2().equals(context.getCountryCodeIso2().toLowerCase()))
+            .filter(item -> ANY.equals(item.getAppName()) || item.getAppName().equals(context.getAppName().toLowerCase()))
+            .filter(item -> ANY.equals(item.getPlatform()) || item.getPlatform().equals(context.getPlatform().toLowerCase()))
+            .filter(item -> ANY.equals(item.getOsVersion()) || item.getOsVersion().equals(context.getOsVersion().toLowerCase()))
+            .filter(item -> ANY.equals(item.getAppVersion()) || item.getAppVersion().equals(context.getAppVersion().toLowerCase()))
             .collect(Collectors.toList());
 
         List<ExcludedAdNetworkDto> toExcludeIfPresent = toExclude.stream()
-            .filter(item -> item.getExcludeIfThisAdNamePresent() != NONE)
+            .filter(item -> !NONE.equals(item.getExcludeIfThisAdNamePresent()))
             .collect(Collectors.toList());
 
         toExclude = toExclude.stream()
-            .filter(item -> item.getExcludeIfThisAdNamePresent() == NONE)
+            .filter(item -> NONE.equals(item.getExcludeIfThisAdNamePresent()))
             .collect(Collectors.toList());
 
         List<AdNetworkScoreDto> scores = new ArrayList<AdNetworkScoreDto>(immutableScores);
-        scores.removeIf(item -> item.getCountryCodeIso2() != context.getCountryCodeIso2().toLowerCase());
+        if(!ANY.equals(context.getCountryCodeIso2().toLowerCase()))
+            scores.removeIf(item -> !item.getCountryCodeIso2().equals(context.getCountryCodeIso2().toLowerCase()));
+
+        if(logger.isTraceEnabled())
+            logger.trace("getRelevantScores: scores.size={} after filtering by country", scores.size());
         
         for (ExcludedAdNetworkDto toExcludeItem : toExclude) {
-            scores.removeIf(item -> item.getAdName() == toExcludeItem.getAdName());
+            scores.removeIf(item -> item.getAdName().equals(toExcludeItem.getAdName()));
         }
         for (ExcludedAdNetworkDto toExcludeIfPresentItem : toExcludeIfPresent) {
-            boolean isPresent = scores.stream().anyMatch(item -> item.getAdName() == toExcludeIfPresentItem.getExcludeIfThisAdNamePresent());
+            boolean isPresent = scores.stream().anyMatch(item -> item.getAdName().equals(toExcludeIfPresentItem.getExcludeIfThisAdNamePresent()));
             if(isPresent)
-                scores.removeIf(item -> item.getAdName() == toExcludeIfPresentItem.getAdName());
+                scores.removeIf(item -> item.getAdName().equals(toExcludeIfPresentItem.getAdName()));
         }
+        // Remove duplicates which may occur if use context with any country
+        scores = scores.stream()
+            .filter(distinctByKey(item -> item.getAdName() + item.getAdType()))
+            .collect(Collectors.toList());
         
-        // Verify that we have minimum number of items of each type, and append unfiltered if not
-        Map<String, Long> countByAdType = scores.stream()
-            .collect(Collectors.groupingBy(AdNetworkScoreDto::getAdType, Collectors.counting()));
+        if(logger.isTraceEnabled())
+            logger.trace("getRelevantScores: scores.size={} after filtering by excluded", scores.size());
+
+        // Verify that we have minimum number of items of each ad type, and append unfiltered if not
+        Map<String, Long> countByAdType = new HashMap<String, Long>();
+        List<String> distinctAdTypes = immutableScores.stream()
+            .filter(distinctByKey(item -> item.getAdType()))
+            .map(AdNetworkScoreDto::getAdType)
+            .collect(Collectors.toList());
+        for (String distinctAdTypesItem: distinctAdTypes) {
+            Long count = scores.stream()
+            .filter(item -> item.getAdType().equals(distinctAdTypesItem))
+            .count();
+            countByAdType.put(distinctAdTypesItem, count);
+        }
+
+        if(logger.isTraceEnabled())
+            logger.trace("getRelevantScores: countByAdType={}", countByAdType);
 
         for (Map.Entry<String, Long> countByAdTypeItem : countByAdType.entrySet()) {
             // Filters may be too strict, erroneous, not enough ad networks ...
@@ -84,7 +114,8 @@ public class FilterService
 
                 // Just add the top few networks of this type regardless of exclusions etc.
                 List<AdNetworkScoreDto> addition = immutableScores.stream()
-                    .filter(item -> item.getAdType() == countByAdTypeItem.getKey())
+                    .filter(item -> item.getAdType().equals(countByAdTypeItem.getKey()))
+                    .filter(distinctByKey(item -> item.getAdName()))
                     .sorted(Comparator.comparingDouble(AdNetworkScoreDto::getAdScore).reversed()) // Descending
                     .limit(filterServiceMinAdNetworksPerAdType - countByAdTypeItem.getValue()) // Take first n
                     .collect(Collectors.toList());
@@ -97,5 +128,11 @@ public class FilterService
             .collect(Collectors.toList());
         
         return scores;
+    }
+
+    public static <T> Predicate<T> distinctByKey(
+        Function<? super T, ?> keyExtractor) {
+        Map<Object, Boolean> seen = new ConcurrentHashMap<>(); 
+        return t -> seen.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null; 
     }
 }

@@ -25,7 +25,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @SpringBootTest(classes = AdEngineBackend.class)
 public class FilterServiceTest {
     private static final Logger logger = LoggerFactory.getLogger(FilterServiceTest.class);
-
+    private boolean initialized = false;
     @Autowired
     private CacheService cacheServiceInstance;
 
@@ -34,7 +34,11 @@ public class FilterServiceTest {
 
     @Before
     public void initializeTest(){
+        if(!initialized)
+        {
         cacheServiceInstance.initializeCache(TestConfiguration.AdNetworkScoresFileName, TestConfiguration.ExcludedAdNetworksFileName);
+            initialized = true;
+        }
     }
 
     @Test
@@ -51,6 +55,43 @@ public class FilterServiceTest {
         logger.info("getRelevantScores_Works_ForKnownCountry: number of results={}", result.size());
 
         assertNotNull(result);
-        assertTrue(result.size() > 0);
+        assertTrue(result.size() == 26);
+        assertTrue(result.get(0).getAdScore() > result.get(result.size()-1).getAdScore());
+    }
+
+    @Test
+    public void getRelevantScores_Adds_WhenTooFewAdNetworksPerType()
+    {        
+        AdNetworkContextDto context = new AdNetworkContextDto();
+        context.setPlatform("platform");
+        context.setOsVersion("osVersion");
+        context.setAppName("appName");
+        context.setAppVersion("appVersion");
+        context.setCountryCodeIso2("00"); // Does not exist
+
+        List<AdNetworkScoreDto> result = filterServiceInstance.getRelevantScores(context, cacheServiceInstance.getImmutableScores(), cacheServiceInstance.getImmutableExcludedNetworks());
+        logger.info("getRelevantScores_Works_ForKnownCountry: number of results={}", result.size());
+
+        assertNotNull(result);
+        assertTrue(result.size() == 15);
+        assertTrue(result.get(0).getAdScore() > result.get(result.size()-1).getAdScore());
+    }
+
+    @Test
+    public void getRelevantScores_ContextWithAnyCountry_DoesNotHaveDuplicates()
+    {        
+        AdNetworkContextDto context = new AdNetworkContextDto();
+        context.setPlatform("platform");
+        context.setOsVersion("osVersion");
+        context.setAppName("appName");
+        context.setAppVersion("appVersion");
+        context.setCountryCodeIso2("*"); // Any country
+
+        List<AdNetworkScoreDto> result = filterServiceInstance.getRelevantScores(context, cacheServiceInstance.getImmutableScores(), cacheServiceInstance.getImmutableExcludedNetworks());
+        logger.info("getRelevantScores_Works_ForKnownCountry: number of results={}", result.size());
+
+        assertNotNull(result);
+        assertTrue(result.size() == 231);
+        assertTrue(result.get(0).getAdScore() > result.get(result.size()-1).getAdScore());
     }
 }

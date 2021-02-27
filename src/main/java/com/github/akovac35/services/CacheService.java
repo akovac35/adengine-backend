@@ -29,6 +29,9 @@ public class CacheService
         if(logger.isTraceEnabled())
             logger.trace("ctor: {}, {}", timerIntervalSeconds, timerEnabled);
 
+        if(timerIntervalSeconds < 1)
+            throw new IllegalArgumentException("Argument should be larger than 0: timerIntervalSeconds");
+
         cacheServiceTimerIntervalSeconds = timerIntervalSeconds;
         cacheServiceTimerEnabled = timerEnabled;
     }
