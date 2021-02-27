@@ -8,11 +8,13 @@ import com.github.akovac35.services.CsvService;
 import com.opencsv.exceptions.CsvException;
 
 import org.mockito.Mockito;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 @Configuration
+@SpringBootApplication
 public class TestConfiguration {
     public static final String ExcludedAdNetworksFileName = "ExcludedAdNetworks.csv";
     public static final String AdNetworkScoresFileName = "AdNetworkScores.csv";
