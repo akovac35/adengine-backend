@@ -35,7 +35,11 @@ public class FilterService
 
     private int filterServiceMinAdNetworksPerAdType;
 
-    List<AdNetworkScoreDto> getRelevantScores(AdNetworkContextDto context, List<AdNetworkScoreDto> immutableScores, List<ExcludedAdNetworkDto> immutableExcludedNetworks)
+    /**
+     * Gets relevant ad networks based on context and cache contents.
+     * @return Returns descending sorted collection of ad networks by score. The collection includes all ad network types with the score being the only sorting property.
+     */
+    public List<AdNetworkScoreDto> getRelevantScores(AdNetworkContextDto context, List<AdNetworkScoreDto> immutableScores, List<ExcludedAdNetworkDto> immutableExcludedNetworks)
     {
         if(logger.isTraceEnabled())
             logger.trace("getRelevantScores: {}, {}, {}", context, immutableScores.size(), immutableExcludedNetworks.size());
@@ -57,6 +61,8 @@ public class FilterService
             .collect(Collectors.toList());
 
         List<AdNetworkScoreDto> scores = new ArrayList<AdNetworkScoreDto>(immutableScores);
+        scores.removeIf(item -> item.getCountryCodeIso2() != context.getCountryCodeIso2().toLowerCase());
+        
         for (ExcludedAdNetworkDto toExcludeItem : toExclude) {
             scores.removeIf(item -> item.getAdName() == toExcludeItem.getAdName());
         }
@@ -74,15 +80,21 @@ public class FilterService
             // Filters may be too strict, erroneous, not enough ad networks ...
             if(countByAdTypeItem.getValue() < filterServiceMinAdNetworksPerAdType)
             {
+                logger.warn("getRelevantScores: filtered too many ad networks for ad type {} - additional ad networks will be added", countByAdTypeItem.getKey());
+
                 // Just add the top few networks of this type regardless of exclusions etc.
                 List<AdNetworkScoreDto> addition = immutableScores.stream()
                     .filter(item -> item.getAdType() == countByAdTypeItem.getKey())
-                    .sorted(Comparator.comparingDouble(AdNetworkScoreDto::getAdScore))
-                    .limit(filterServiceMinAdNetworksPerAdType - countByAdTypeItem.getValue())
+                    .sorted(Comparator.comparingDouble(AdNetworkScoreDto::getAdScore).reversed()) // Descending
+                    .limit(filterServiceMinAdNetworksPerAdType - countByAdTypeItem.getValue()) // Take first n
                     .collect(Collectors.toList());
                 scores.addAll(addition);
             }
         }
+
+        scores = scores.stream()
+            .sorted(Comparator.comparing(AdNetworkScoreDto::getAdScore).reversed())
+            .collect(Collectors.toList());
         
         return scores;
     }

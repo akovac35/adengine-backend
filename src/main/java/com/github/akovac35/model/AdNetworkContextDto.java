@@ -7,7 +7,6 @@ public class AdNetworkContextDto
 	private String appName;
 	private String appVersion;
 	private String countryCodeIso2;
-    private String adType;
 
     public String getPlatform() {
         return platform;
@@ -49,14 +48,6 @@ public class AdNetworkContextDto
         this.countryCodeIso2 = countryCodeIso2;
     }
 
-    public String getAdType() {
-        return adType;
-    }
-
-    public void setAdType(final String adType) {
-        this.adType = adType;
-    }
-
     @Override
     public String toString() {
         return "AdNetworkContextDto [" + 
@@ -65,7 +56,6 @@ public class AdNetworkContextDto
         ", appName=" + appName + 
         ", appVersion=" + appVersion + 
         ", countryCodeIso2=" + countryCodeIso2 + 
-        ", adType=" + adType + 
         "]";
     }
 }

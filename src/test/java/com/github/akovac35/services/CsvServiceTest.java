@@ -22,12 +22,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @SpringBootTest(classes = AdEngineBackend.class)
 public class CsvServiceTest {
     @Autowired
-    private CsvService csvService;
+    private CsvService csvServiceInstance;
 
     @Test
     public void getFileContents_Works() throws IOException, CsvException
     {
-        String result = csvService.getFileContents(TestConfiguration.ExcludedAdNetworksFileName);
+        String result = csvServiceInstance.getFileContents(TestConfiguration.ExcludedAdNetworksFileName);
         
         assertNotNull(result);
         assertTrue(result.length() > 0);
@@ -36,7 +36,7 @@ public class CsvServiceTest {
     @Test
     public void getCsvContents_Works() throws IOException, CsvException
     {
-        List<String[]> result = csvService.getCsvContents(TestConfiguration.ExcludedAdNetworksFileName);
+        List<String[]> result = csvServiceInstance.getCsvContents(TestConfiguration.ExcludedAdNetworksFileName);
         
         assertTrue(result.size() != 0);
     }
