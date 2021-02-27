@@ -55,7 +55,7 @@ cecho () {
 	return;
 }
 
-warning () {
+warn () {
 
 	cecho -c 'yellow' "$@";
 }
@@ -65,7 +65,7 @@ error () {
 	cecho -c 'red' "$@";
 }
 
-information () {
+info () {
 
 	cecho -c 'green' "$@";
 }

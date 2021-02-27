@@ -1,14 +1,13 @@
+source cecho.sh
 
-
-
-echo "Creating project"
+info "Creating project"
 gcloud projects create adengine-backend
 gcloud config set project adengine-backend
+warn "Project ID: $DEVSHELL_PROJECT_ID"
 
-echo "Creating adengine-backend"
+info "Creating adengine-backend"
 gcloud app create --region "us-central"
 
-echo "Making bucket: gs://$DEVSHELL_PROJECT_ID-media"
+info "Creating bucket: gs://$DEVSHELL_PROJECT_ID-media"
 gsutil mb gs://$DEVSHELL_PROJECT_ID-media
 
-echo "Project ID: $DEVSHELL_PROJECT_ID"

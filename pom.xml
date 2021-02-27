@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.akovac35</groupId>
 	<artifactId>adengine-backend</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
 	<name>adengine-backend</name>
 	<description>Retrieves top scored ad networks for some context.</description>
@@ -61,7 +61,7 @@
                 <version>2.1.0</version>
                 <configuration>
                     <version>1</version>
-                    <projectId>GCLOUD_PROJECT</projectId>
+                    <projectId>${env.GCLOUD_PROJECT}</projectId>
                 </configuration>
             </plugin>
 		</plugins>
