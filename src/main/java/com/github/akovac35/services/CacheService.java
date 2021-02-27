@@ -95,7 +95,7 @@ public class CacheService
         @Override
         public void run() {
             if(logger.isTraceEnabled())
-                logger.trace("CacheServiceTimerTask.run");
+                logger.warn("CacheServiceTimerTask.run");
             
             // We are just updating the references, so no need for thread synchronization
             try {

@@ -1,5 +1,7 @@
 package com.github.akovac35.model;
 
+import java.util.Map;
+
 public class AdNetworkContextDto
 {
     private String platform;
@@ -46,6 +48,18 @@ public class AdNetworkContextDto
 
     public void setCountryCodeIso2(final String countryCodeIso2) {
         this.countryCodeIso2 = countryCodeIso2;
+    }
+
+    public static AdNetworkContextDto fromMap(Map<String,String> context)
+    {
+        AdNetworkContextDto tmp = new AdNetworkContextDto();
+        tmp.setPlatform((context.containsKey("platform") ? context.get("platform") : ""));
+        tmp.setOsVersion((context.containsKey("osVersion") ? context.get("osVersion") : ""));
+        tmp.setAppName((context.containsKey("appName") ? context.get("appName") : ""));
+        tmp.setAppVersion((context.containsKey("appVersion") ? context.get("appVersion") : ""));
+        tmp.setCountryCodeIso2((context.containsKey("countryCodeIso2") ? context.get("countryCodeIso2") : "*"));
+
+        return tmp;
     }
 
     @Override
