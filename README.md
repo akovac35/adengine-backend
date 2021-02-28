@@ -30,14 +30,11 @@ Open gcloud console and:
 * ```dev_start_service.sh``` to start the service in preview (development) mode in the current console
 * ```dev_publish_service.sh``` to publish the service from the current console to production - yikes! Next time setup the devops workflow ...
 
-The service is available on a url similar to the following sample URL: http://adengine-backend.uc.r.appspot.com/swagger-ui.html
-
-Note that requests in Swagger are slower because of result parsing and highlighting.
-
 ### Sample requests
 
-The URLs provided here are intended for format reference only - consider yourself charged if they work.
+The URLs provided here are intended for format reference only - consider yourself charged if they work. The service was just spinning up if the response was not immediate; try another request to see the difference.
 
+* OpenAPI3 document - note that requests in Swagger are slower because of result parsing and highlighting in the browser: http://adengine-backend.uc.r.appspot.com/swagger-ui.html
 * A request which filters out facebook ads because it is not allowed in China: http://adengine-backend.uc.r.appspot.com/api/adnetworkscores?countryCodeIso2=cn
 * A request which includes facebook ads: http://adengine-backend.uc.r.appspot.com/api/adnetworkscores?countryCodeIso2=*
 * A request which contains admob-optout because the list for France does not contain admob: http://adengine-backend.uc.r.appspot.com/api/adnetworkscores?countryCodeIso2=fr
