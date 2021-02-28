@@ -1,5 +1,8 @@
 source cecho.sh
 
+error "You are about to publish the service"
+read -p "Press enter key to continue"
+
 warn "Generating temporary app.yaml"
 envsubst < src/main/appengine/app.yaml > tmp-app.yaml
 

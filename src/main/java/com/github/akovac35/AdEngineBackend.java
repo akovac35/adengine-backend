@@ -6,7 +6,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import com.github.akovac35.model.AdNetworkContextDto;
-import com.github.akovac35.model.AdNetworkScoreDto;
+import com.github.akovac35.model.AdNetworkResponseScoreDto;
 import com.github.akovac35.services.CacheService;
 import com.github.akovac35.services.FilterService;
 
@@ -58,7 +58,7 @@ public class AdEngineBackend {
     }
 
     @GetMapping()
-    public List<AdNetworkScoreDto> getScores(@RequestParam Map<String, String> context)
+    public List<AdNetworkResponseScoreDto> getScores(@RequestParam Map<String, String> context)
     {
         if(logger.isTraceEnabled())
             logger.trace("getScores: {}", context);
@@ -68,8 +68,9 @@ public class AdEngineBackend {
         if(logger.isTraceEnabled())
             logger.trace("getScores: context={}", tmp);
 
-        List<AdNetworkScoreDto> results =
-            filterServiceInstance.getRelevantScores(tmp, cacheServiceInstance.getImmutableScores(), cacheServiceInstance.getImmutableExcludedNetworks());
+        List<AdNetworkResponseScoreDto> results = AdNetworkResponseScoreDto.fromAdNetworkScoreDto(
+            filterServiceInstance.getRelevantScores(tmp, cacheServiceInstance.getImmutableScores(), cacheServiceInstance.getImmutableExcludedNetworks())
+        );
         
         if(logger.isTraceEnabled())
             logger.trace("getScores: results.size={}", results.size());
