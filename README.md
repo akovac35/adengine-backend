@@ -35,6 +35,17 @@ Open gcloud console and:
 The URLs provided here are intended for format reference only - consider yourself charged if they work. The service was just spinning up if the response was not immediate; try another request to see the difference.
 
 * OpenAPI3 document - note that requests in Swagger are slower because of result parsing and highlighting in the browser: http://adengine-backend.uc.r.appspot.com/swagger-ui.html
+
+Sample Swagger request:
+
+```json
+{
+  "countryCodeIso2": "cn",
+  "platform": "android",
+  "osVersion": "9" 
+}
+```
+
 * A request which filters out facebook ads because it is not allowed in China: http://adengine-backend.uc.r.appspot.com/api/adnetworkscores?countryCodeIso2=cn
 * A request which includes facebook ads: http://adengine-backend.uc.r.appspot.com/api/adnetworkscores?countryCodeIso2=*
 * A request which contains admob-optout because the list for France does not contain admob: http://adengine-backend.uc.r.appspot.com/api/adnetworkscores?countryCodeIso2=fr
