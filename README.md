@@ -32,7 +32,7 @@ Open gcloud console and:
 
 ### Sample requests
 
-The URLs provided here are intended for format reference only - consider yourself charged if they work. The service was just spinning up if the response was not immediate; try another request to see the difference.
+The URLs provided here are intended for format reference only - consider yourself charged if they work. **The service was just spinning up if the response was not immediate**; try another request to see the difference.
 
 * OpenAPI3 document - note that requests in Swagger are slower because of result parsing and highlighting in the browser: http://adengine-backend.uc.r.appspot.com/swagger-ui.html
 
