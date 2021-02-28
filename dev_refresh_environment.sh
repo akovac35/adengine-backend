@@ -11,7 +11,7 @@ warn "Updating files on $GCLOUD_BUCKET"
 gsutil cp data/ExcludedAdNetworks.csv gs://$GCLOUD_BUCKET/
 gsutil cp data/AdNetworkScores.csv gs://$GCLOUD_BUCKET/
 
-gitkeyfile=~/.ssh/id_github
+gitkeyfile=~/.ssh/id_github.pub
 if test -f $gitkeyfile; then
     warn "Updating ssh configuration for github updates"
     eval "$(ssh-agent -s)"
