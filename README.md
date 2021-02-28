@@ -49,7 +49,7 @@ The service is designed with reliability in mind:
 
 * missing request context properties have defaults,
 * problems with cache update do not impact service functionality - last valid cache continues to be used,
-* if the number of result items is too low, unfiltered items will be appended - something is better than nothing,
+* if the number of result items per ad network type is too low, unfiltered items will be appended - something is better than nothing,
 * duplicates are removed,
 * ...
 
@@ -87,11 +87,10 @@ aleksander,10,3,*
 
 The service is designed for about 10 000 entries in the AdNetworkScores.csv file and about 1000 entries in the ExcludedAdNetworks.csv file. This should not be a limitation because parameterizations are possible, see file examples.
 
-On the hosting side, the service uses the standard variant of Java 11 Google App Engine, which supports rapid and high scalability.
+On the hosting side, the service uses the standard variant of Java 11 Google App Engine, which supports rapid and high scalability. Automatic scaling is configured with criteria for cpu usage and req/s/instance. This enables Google Cloud to start and stop instances as needed.**The default configuration for this service permits Google Cloud to stop all service instances** if there are no requests in a given time frame, for cost cutting. This also means that the first request in such a state will be slower.
 
 ## TODO
 
-* first request is slower because of Java class loading and heap allocations - perhaps a warmup will help
 * add authentication with tokens
 * consider rate limiters
 * add health checks
