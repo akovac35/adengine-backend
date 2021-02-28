@@ -25,7 +25,7 @@ Open gcloud console and:
 * clone this git repository and cd to the cloned repository
 * ```chmod 700 .``` for script execution
 * FIRST TIME ONLY: ```create_environment.sh``` to create project and bucket
-* ```dev_refresh_environment.sh``` to deploy file changes to the bucket and to set environment variables, e.g., when resuming development work
+* ```source dev_refresh_environment.sh``` to deploy file changes to the bucket and **to set required environment variables**, e.g., when resuming development work
 * ```dev_run_tests.sh``` to run unit tests
 * ```dev_start_service.sh``` to start the service in preview (development) mode in the current console
 * ```dev_publish_service.sh``` to publish the service from the current console to production - yikes! Next time setup the devops workflow ...
