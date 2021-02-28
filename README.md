@@ -12,9 +12,9 @@ The service returns a list of ad network names and their metadata, sorted by a d
 
 The service implements basic business rules to cover the requirements such as the following:
 
-* AdMob doesn’t work on any android os version 9 so it should not be returned to the app, but works on other os versions.
-* Facebook should not be served in CN.
-* AdMob-OptOut should be present in list only if there is no AdMob in list.
+* Ad network X does not support Android 9 and it should not be in the list for such a device. It supports other os versions.
+* Ad network Y should not be served in China.
+* Ad network Y-OptOut should be present in list only if there is no ad network Y in list.
 
 The service retrieves the data from a storage bucket and caches it in memory - cache in refreshed once per hour by a timer. The service is designed in such a way to enable uninterrupted operation without increasing response times while the cache is being refreshed. 
 

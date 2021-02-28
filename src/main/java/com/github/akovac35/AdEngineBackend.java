@@ -1,5 +1,6 @@
 package com.github.akovac35;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,6 +56,9 @@ public class AdEngineBackend {
 
         cacheServiceInstance.initializeCache(scoresCsvFileName, excludedNetworksCsvFileName);
         cacheServiceInstance.startCacheUpdateTimer();
+
+        // Warmup request
+        filterServiceInstance.getRelevantScores(AdNetworkContextDto.fromMap(new HashMap<String, String>()), cacheServiceInstance.getImmutableScores(), cacheServiceInstance.getImmutableExcludedNetworks());
     }
 
     @GetMapping()
