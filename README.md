@@ -100,6 +100,7 @@ The service is designed for about 10 000 entries in the AdNetworkScores.csv file
 On the hosting side, the service uses the standard variant of Java 11 Google App Engine, which supports rapid and high scalability. Automatic scaling is configured with criteria for cpu usage and req/s/instance. This enables Google Cloud to start and stop instances as needed. **The default configuration for this service permits Google Cloud to stop all service instances** if there are no requests in a given time frame, for cost cutting. This also means that the first request in such a state will be slower.
 ## TODO
 
+* always have at least one instance up in production
 * add authentication with tokens
 * consider rate limiters
 * add health checks
