@@ -16,7 +16,7 @@ The service implements basic business rules to cover the requirements such as th
 * Ad network Y should not be served in China.
 * Ad network Y-OptOut should be present in the list only if there is no ad network Y in list.
 
-The service retrieves the data from a storage bucket and caches it in memory - cache is refreshed once per hour by a timer. The service is designed in such a way to enable uninterrupted operation without increasing response times while the cache is being refreshed. 
+The service retrieves the data from a storage bucket and caches it in memory - cache is refreshed once per hour by a timer, or on demand via api request. The service is designed in such a way to enable uninterrupted operation without increasing response times while the cache is being refreshed. 
 
 ## Usage
 
@@ -32,7 +32,7 @@ Open gcloud console and:
 
 ### Sample requests
 
-The URLs provided here are intended for format reference only - consider yourself charged if they work. **The service was just spinning up if the response was not immediate**; try another request to see the difference.
+The URLs provided here are intended for format reference only - consider yourself charged if they work.
 
 * OpenAPI3 document - note that requests in Swagger are slower because of result parsing and highlighting in the browser: http://adengine-backend.uc.r.appspot.com/swagger-ui.html
 
@@ -52,6 +52,7 @@ Sample Swagger request:
 * A request which does not contain admob-optout because the list contains admob: http://adengine-backend.uc.r.appspot.com/api/adnetworkscores?countryCodeIso2=*
 * A request which does not contain admob because it does not support android 9: http://adengine-backend.uc.r.appspot.com/api/adnetworkscores?countryCodeIso2=br&platform=android&osVersion=9
 * A request which contains admob: http://adengine-backend.uc.r.appspot.com/api/adnetworkscores?countryCodeIso2=br&platform=android&osVersion=*
+* Cache refresh request: http://adengine-backend.uc.r.appspot.com/api/refreshCache
 
 ## Reliability
 
@@ -97,17 +98,16 @@ aleksander,10,3,*
 
 The service is designed for about 10 000 entries in the AdNetworkScores.csv file and about 1000 entries in the ExcludedAdNetworks.csv file. This should not be a limitation because parameterizations are possible, see file examples.
 
-On the hosting side, the service uses the standard variant of Java 11 Google App Engine, which supports rapid and high scalability. Automatic scaling is configured with criteria for cpu usage and req/s/instance. This enables Google Cloud to start and stop instances as needed. **The default configuration for this service permits Google Cloud to stop all service instances** if there are no requests in a given time frame, for cost cutting. This also means that the first request in such a state will be slower.
+On the hosting side, the service uses the standard variant of Java 11 Google App Engine, which supports rapid and high scalability. Automatic scaling is configured with criteria for cpu usage and req/s/instance. This enables Google Cloud to start and stop instances as needed. The default configuration for this service permits Google Cloud to keep one instance alive at all times.
+
 ## TODO
 
-* always have at least one instance up in production
 * add authentication with tokens
 * consider rate limiters
 * add health checks
 * add scalability tests
 * add devops workflows
 * add alert notifications
-* add cache refresh on demand
 
 ## See also
 
