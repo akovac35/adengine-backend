@@ -1,5 +1,8 @@
 source cecho.sh
 
+error "This script must be executed as follows: source dev_refresh_environment.sh"
+read -p "Press enter key to continue"
+
 warn "Setting project to adengine-backend"
 gcloud config set project adengine-backend
 
