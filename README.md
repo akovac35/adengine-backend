@@ -109,6 +109,11 @@ On the hosting side, the service uses the standard variant of Java 11 Google App
 * add devops workflows
 * add alert notifications
 
+## Releases
+
+* v1.0.0 - Initial release
+* v1.0.1 - Configured minimum number of instances, added warmup and cache refresh apis, refactoring
+
 ## See also
 
 [Notes](NOTES.md)
