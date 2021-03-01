@@ -16,7 +16,6 @@ ssh-keygen -t rsa -b 4096 -N '' -f id_github -C aleksander.kovac@gmail.com
 chmod 600 ~/.ssh/*
 ssh-add ~/.ssh/id_github
 
-git clone git@github.com:akovac35/tmp.git
 git config --global user.email "aleksander.kovac@gmail.com"
 git config --global user.name "Aleksander Kovač"
 ```
