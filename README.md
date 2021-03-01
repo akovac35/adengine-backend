@@ -52,7 +52,7 @@ Sample Swagger request:
 * A request which does not contain admob-optout because the list contains admob: http://adengine-backend.uc.r.appspot.com/api/adnetworkscores?countryCodeIso2=*
 * A request which does not contain admob because it does not support android 9: http://adengine-backend.uc.r.appspot.com/api/adnetworkscores?countryCodeIso2=br&platform=android&osVersion=9
 * A request which contains admob: http://adengine-backend.uc.r.appspot.com/api/adnetworkscores?countryCodeIso2=br&platform=android&osVersion=*
-* Cache refresh request: http://adengine-backend.uc.r.appspot.com/api/refreshCache
+* Cache refresh request - it is a PUT request, use Swagger: http://adengine-backend.uc.r.appspot.com/swagger-ui.html
 
 ## Reliability
 
@@ -113,6 +113,7 @@ On the hosting side, the service uses the standard variant of Java 11 Google App
 
 * v1.0.0 - Initial release
 * v1.0.1 - Configured minimum number of instances, added warmup and cache refresh apis, refactoring
+* v1.0.2 - Minor changes
 
 ## See also
 

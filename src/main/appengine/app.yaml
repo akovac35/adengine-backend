@@ -7,7 +7,7 @@ automatic_scaling:
   max_instances: 5
   # Idle instances do not serve traffic, but are kept warm in
   # case of a traffic spike
-  # min_idle_instances: 1
+  min_idle_instances: 1
   # max_idle_instances: 4
   max_concurrent_requests: 50
 env_variables:

@@ -80,7 +80,7 @@ public class AdEngineBackend {
         return results;
     }
 
-    @RequestMapping(value = "/refreshCache", method = RequestMethod.GET)
+    @RequestMapping(value = "/refreshCache", method = RequestMethod.PUT)
     public String refreshCache() {
         if (logger.isTraceEnabled())
             logger.trace("refreshCache");
