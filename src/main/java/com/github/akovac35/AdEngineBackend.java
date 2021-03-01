@@ -1,6 +1,5 @@
 package com.github.akovac35;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,66 +17,76 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
-@RequestMapping(value = "/api/adnetworkscores")
 @RestController
-@ConditionalOnProperty(
-    value="com.github.akovac35.isTest", 
-    havingValue = "false")
+@RequestMapping("/api")
+@ConditionalOnProperty(value = "com.github.akovac35.isTest", havingValue = "false")
 public class AdEngineBackend {
 
-	public static void main(String[] args) {
-		SpringApplication.run(AdEngineBackend.class, args);
+    public static void main(String[] args) {
+        SpringApplication.run(AdEngineBackend.class, args);
     }
-    
+
     private static final Logger logger = LoggerFactory.getLogger(AdEngineBackend.class);
 
-    @Value("${com.github.akovac35.scoresCsvFileName}")
-    private String scoresCsvFileName;
-
-    @Value("${com.github.akovac35.excludedNetworksCsvFileName}")
-    private String excludedNetworksCsvFileName;
-    
     @Autowired
-    private CacheService cacheServiceInstance;
+    public AdEngineBackend(@Value("${com.github.akovac35.scoresCsvFileName}") String scoresCsvFileName,
+            @Value("${com.github.akovac35.excludedNetworksCsvFileName}") String excludedNetworksCsvFileName,
+            CacheService cacheServiceInstance, FilterService filterServiceInstance) {
+        if (logger.isTraceEnabled())
+            logger.trace("ctor: {} {}", scoresCsvFileName, excludedNetworksCsvFileName);
 
-    @Autowired
-    private FilterService filterServiceInstance;
+        this.scoresCsvFileName = scoresCsvFileName;
+        this.excludedNetworksCsvFileName = excludedNetworksCsvFileName;
+        this.cacheServiceInstance = cacheServiceInstance;
+        this.filterServiceInstance = filterServiceInstance;
+    }
+
+    protected final String scoresCsvFileName;
+    protected final String excludedNetworksCsvFileName;
+    protected final CacheService cacheServiceInstance;
+    protected final FilterService filterServiceInstance;
 
     @PostConstruct
-    private void postConstruct(){
-        if(logger.isTraceEnabled())
+    public void postConstruct() {
+        if (logger.isTraceEnabled())
             logger.trace("postConstruct");
 
         cacheServiceInstance.initializeCache(scoresCsvFileName, excludedNetworksCsvFileName);
         cacheServiceInstance.startCacheUpdateTimer();
-
-        // Warmup request
-        filterServiceInstance.getRelevantScores(AdNetworkContextDto.fromMap(new HashMap<String, String>()), cacheServiceInstance.getImmutableScores(), cacheServiceInstance.getImmutableExcludedNetworks());
     }
 
-    @GetMapping()
-    public List<AdNetworkResponseScoreDto> getScores(@RequestParam Map<String, String> context)
-    {
-        if(logger.isTraceEnabled())
+    @RequestMapping(value = "/adnetworkscores", method = RequestMethod.GET)
+    public List<AdNetworkResponseScoreDto> getScores(@RequestParam Map<String, String> context) {
+        if (logger.isTraceEnabled())
             logger.trace("getScores: {}", context);
-        
+
         AdNetworkContextDto tmp = AdNetworkContextDto.fromMap(context);
-        
-        if(logger.isTraceEnabled())
+
+        if (logger.isTraceEnabled())
             logger.trace("getScores: context={}", tmp);
 
         List<AdNetworkResponseScoreDto> results = AdNetworkResponseScoreDto.fromAdNetworkScoreDto(
-            filterServiceInstance.getRelevantScores(tmp, cacheServiceInstance.getImmutableScores(), cacheServiceInstance.getImmutableExcludedNetworks())
-        );
-        
-        if(logger.isTraceEnabled())
+                filterServiceInstance.getRelevantScores(tmp, cacheServiceInstance.getImmutableScores(),
+                        cacheServiceInstance.getImmutableExcludedNetworks()));
+
+        if (logger.isTraceEnabled())
             logger.trace("getScores: results.size={}", results.size());
         return results;
+    }
+
+    @RequestMapping(value = "/refreshCache", method = RequestMethod.GET)
+    public String refreshCache() {
+        if (logger.isTraceEnabled())
+            logger.trace("refreshCache");
+
+        cacheServiceInstance.updateCache();
+
+        return "Cache updated";
     }
 }
